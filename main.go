@@ -103,7 +103,7 @@ func main() {
 // and repoints it if the binary it ran was moved or deleted. It returns a
 // notice for the UI, or "".
 func ensureDaemon(dir string, ep *endpoint) string {
-	if runtime.GOOS != "darwin" || usage.OptedOut(dir) {
+	if !usage.Supported() || usage.OptedOut(dir) {
 		return ""
 	}
 	exe, err := executable()
@@ -127,7 +127,7 @@ func ensureDaemon(dir string, ep *endpoint) string {
 	if installed {
 		return ""
 	}
-	return "已注册开机启动的后台记录（clashtop daemon uninstall 可移除）"
+	return "已注册后台记录，登录后自动运行（clashtop daemon uninstall 可移除）"
 }
 
 func executable() (string, error) {
@@ -152,8 +152,8 @@ func daemon(args []string) {
 		fail(err)
 	}
 
-	if action != "" && runtime.GOOS != "darwin" {
-		fail(fmt.Errorf("后台记录只支持 macOS"))
+	if action != "" && !usage.Supported() {
+		fail(fmt.Errorf("这个系统不支持后台记录（需要 macOS 或带 systemd 的 Linux），可以直接运行 clashtop daemon"))
 	}
 	switch action {
 	case "":

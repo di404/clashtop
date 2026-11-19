@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -207,8 +206,8 @@ func (m *Model) statsView(h int) string {
 		msg := " 暂无数据"
 		if v.span != 0 && (m.hist == nil || !m.hist.found) {
 			msg = " 没有后台记录，可运行 clashtop daemon install"
-			if runtime.GOOS != "darwin" {
-				msg = " 没有后台记录（仅 macOS 支持）"
+			if !usage.Supported() {
+				msg = " 没有后台记录，可运行 clashtop daemon"
 			}
 		}
 		b.WriteString("\n" + sMuted.Render(msg))

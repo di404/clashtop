@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
@@ -25,8 +24,8 @@ func plistPath() (string, error) {
 
 func domain() string { return fmt.Sprintf("gui/%d", os.Getuid()) }
 
-// optOutPath marks that the user removed the agent, so the TUI won't re-add it.
-func optOutPath(dir string) string { return filepath.Join(dir, "autostart-off") }
+// Supported reports whether this system can run the recorder in the background.
+func Supported() bool { return true }
 
 func xmlEscape(s string) string {
 	var b bytes.Buffer
@@ -37,9 +36,6 @@ func xmlEscape(s string) string {
 // Install writes a LaunchAgent that runs `exe args...` at login and keeps it
 // alive, then (re)loads it.
 func Install(dir, exe string, args []string) error {
-	if runtime.GOOS != "darwin" {
-		return errors.New("开机启动目前只支持 macOS（launchd）")
-	}
 	p, err := plistPath()
 	if err != nil {
 		return err
@@ -127,10 +123,4 @@ func Status() (installed, loaded bool, exe string) {
 	}
 	loaded = exec.Command("launchctl", "print", domain()+"/"+Label).Run() == nil
 	return
-}
-
-// OptedOut reports whether the user removed the agent with `daemon uninstall`.
-func OptedOut(dir string) bool {
-	_, err := os.Stat(optOutPath(dir))
-	return err == nil
 }
