@@ -1,6 +1,6 @@
 # ClashTop
 
-在终端里监控 Clash / mihomo：流量、连接、日志和流量统计。
+在终端里监控 Clash / mihomo：流量、连接、日志和流量统计。支持 macOS 和 Linux。
 
 ## 安装
 

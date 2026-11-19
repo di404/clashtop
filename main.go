@@ -72,6 +72,9 @@ func (e *endpoint) client() *api.Client {
 }
 
 func main() {
+	if runtime.GOOS == "windows" {
+		fail(fmt.Errorf("ClashTop 不支持 Windows"))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "daemon" {
 		daemon(os.Args[2:])
 		return
@@ -149,6 +152,9 @@ func daemon(args []string) {
 		fail(err)
 	}
 
+	if action != "" && runtime.GOOS != "darwin" {
+		fail(fmt.Errorf("后台记录只支持 macOS"))
+	}
 	switch action {
 	case "":
 		ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
