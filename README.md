@@ -4,6 +4,8 @@
 
 ## 安装
 
+从 [Releases](https://github.com/di404/clashtop/releases) 下载，或：
+
 ```bash
 go install github.com/di404/clashtop@latest
 ```
